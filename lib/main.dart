@@ -14,7 +14,7 @@ void main() {
   //   DeviceOrientation.portraitUp,
   //   DeviceOrientation.portraitUp,
   // ]);
-  runApp( MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -28,24 +28,22 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         // primaryColor: Colors.purple,
         // primarySwatch: Colors.purple,
-        colorScheme: Theme.of(context).colorScheme.copyWith(
-            primary: Colors.purple,
-            secondary: Colors.amber),
+        colorScheme: Theme.of(context)
+            .colorScheme
+            .copyWith(primary: Colors.purple, secondary: Colors.amber),
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
-          titleMedium: const TextStyle(
-              fontFamily: 'OpenSans',
-              fontSize: 20,
-              fontWeight: FontWeight.bold
-          ),
-          labelSmall: TextStyle(color: Colors.white),
-        ),
+              titleMedium: const TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold),
+              labelSmall: TextStyle(color: Colors.white),
+            ),
         appBarTheme: const AppBarTheme(
           titleTextStyle: TextStyle(
-            fontFamily: 'OpenSans',
-            fontSize: 20,
-            fontWeight: FontWeight.bold
-          ),
+              fontFamily: 'OpenSans',
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
         ),
         // accentColor: Colors.amber
       ),
@@ -82,14 +80,15 @@ class _MyHomePageState extends State<MyHomePage> {
   List<Transaction> get _recentTransaction {
     return _userTransaction.where((tx) {
       return tx.date.isAfter(
-          DateTime.now().subtract(
-              Duration(days: 7),
-          ),
+        DateTime.now().subtract(
+          Duration(days: 7),
+        ),
       );
     }).toList();
   }
 
-  void _addNewTransaction(String txTitle, double txAmount, DateTime chosenDate) {
+  void _addNewTransaction(
+      String txTitle, double txAmount, DateTime chosenDate) {
     final newTx = Transaction(
       title: txTitle,
       amount: txAmount,
@@ -120,85 +119,101 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
-    final mediaQuery  = MediaQuery.of(context);
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     final appBar = AppBar(
-            title: const Text(
-              'Personal Expenses',
-              style: TextStyle(fontFamily: 'Open Sans'),),
-            actions: <Widget>[
-              IconButton(
-                  onPressed: () => _startAddNewTransaction(context),
-                  icon: Icon(Icons.add)
-              ),
-            ],
-          );
+      title: const Text(
+        'Personal Expenses',
+        style: TextStyle(fontFamily: 'Open Sans'),
+      ),
+      actions: <Widget>[
+        IconButton(
+            onPressed: () => _startAddNewTransaction(context),
+            icon: Icon(Icons.add)),
+      ],
+    );
     final appBarIOS = CupertinoNavigationBar(
-      middle: Text(
-              'Personal Expenses'
+      middle: Text('Personal Expenses'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          GestureDetector(
+            child: Icon(CupertinoIcons.add),
+            onTap: () => _startAddNewTransaction(context),
           ),
-      trailing: Row(children: <Widget>[
-        GestureDetector(
-          child: Icon(CupertinoIcons.add),
-          onTap: () => _startAddNewTransaction(context),
-        ),
         ],
       ),
-      );
+    );
     final txListWidget = Container(
       height: (MediaQuery.of(context).size.height -
-          appBar.preferredSize.height -
-          MediaQuery.of(context).padding.top) * 0.7,
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.7,
       child: TransactionList(_userTransaction, _deleteTransaction),
     );
 
-    final pageBody = SingleChildScrollView (
-      child: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          if (isLandscape) Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('Show Chart'),
-              Switch.adaptive(
-                activeColor: Theme.of(context).colorScheme.secondary,
-                value: _showChart,
-                onChanged: (val) {
-                  setState(() {
-                    _showChart = val;
-                  });
-                },
+    final pageBody = SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'Show Chart',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Switch.adaptive(
+                    activeColor: Theme.of(context).colorScheme.secondary,
+                    value: _showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        _showChart = val;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
-          if (!isLandscape) Container(
-              height: (MediaQuery.of(context).size.height -
-                  appBar.preferredSize.height -
-                  MediaQuery.of(context).padding.top) * 0.3,
-              child: Chart(_recentTransaction)
-          ),
-          if (!isLandscape) txListWidget,
-          if (isLandscape) _showChart
-              ? Container(
-              height: (MediaQuery.of(context).size.height -
-                  appBar.preferredSize.height -
-                  MediaQuery.of(context).padding.top) * 0.7,
-              child: Chart(_recentTransaction)
-          )
-              : txListWidget
-        ],
+            if (!isLandscape)
+              Container(
+                  height: (MediaQuery.of(context).size.height -
+                          appBar.preferredSize.height -
+                          MediaQuery.of(context).padding.top) *
+                      0.3,
+                  child: Chart(_recentTransaction)),
+            if (!isLandscape) txListWidget,
+            if (isLandscape)
+              _showChart
+                  ? Container(
+                      height: (MediaQuery.of(context).size.height -
+                              appBar.preferredSize.height -
+                              MediaQuery.of(context).padding.top) *
+                          0.7,
+                      child: Chart(_recentTransaction))
+                  : txListWidget
+          ],
+        ),
       ),
     );
 
     return Platform.isIOS
-        ? CupertinoPageScaffold(child: pageBody, navigationBar: appBarIOS,)
+        ? CupertinoPageScaffold(
+            child: pageBody,
+            navigationBar: appBarIOS,
+          )
         : Scaffold(
             appBar: appBar,
             body: pageBody,
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
             floatingActionButton: Platform.isIOS
                 ? Container()
                 : FloatingActionButton(
@@ -208,4 +223,3 @@ class _MyHomePageState extends State<MyHomePage> {
           );
   }
 }
-

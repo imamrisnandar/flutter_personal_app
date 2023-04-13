@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -38,10 +41,10 @@ class _NewTransactionState extends State<NewTransaction> {
 
   void _presentDatePicker() {
     showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(2009),
-        lastDate: DateTime.now(),
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2009),
+      lastDate: DateTime.now(),
     ).then((pickedDate) {
       if (pickedDate == null) {
         return;
@@ -60,10 +63,10 @@ class _NewTransactionState extends State<NewTransaction> {
         elevation: 5,
         child: Container(
           padding: EdgeInsets.only(
-              top: 10,
-              left: 10,
-              right: 10,
-              bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+            top: 10,
+            left: 10,
+            right: 10,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 10,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -94,16 +97,27 @@ class _NewTransactionState extends State<NewTransaction> {
                           ? 'No Date Chosen!'
                           : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}'),
                     ),
-                    TextButton(
-                      onPressed: _presentDatePicker,
-                      child: Text('Choose Date', style: TextStyle(fontWeight: FontWeight.bold),),
-                    ),
+                    Platform.isIOS
+                        ? CupertinoButton(
+                            onPressed: _presentDatePicker,
+                            child: Text(
+                              'Choose Date',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          )
+                        : TextButton(
+                            onPressed: _presentDatePicker,
+                            child: Text(
+                              'Choose Date',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
                   ],
                 ),
               ),
               ElevatedButton(
-                  onPressed: _submitData,
-                  child: const Text('Add Transaction'),
+                onPressed: _submitData,
+                child: const Text('Add Transaction'),
               )
             ],
           ),
